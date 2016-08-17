@@ -124,7 +124,7 @@ class BracketCanvas:
 
             # connections
             if leftover != None:
-                conns = [leftover] + conns
+                conns.append(leftover)
                 leftover = None
 
             next_pos = []
@@ -138,7 +138,6 @@ class BracketCanvas:
         if pos in self.positions:
             self.draw_str((next_pos[0][0]+1, next_pos[0][1]+1), self.names[self.positions.index(pos)])
 
-            
         self.present()
 
     def present(self):
@@ -150,8 +149,11 @@ class BracketCanvas:
 if __name__ == '__main__':
     
     # test
-    names = ['1ss','2wdadwa,,', '3dwadaw,,,', '323', 'jjkjslkj', '232']
+    names = ['1ss','2wdadwa,,', '3dwadaw,,,', '323', 'jjkjslkj', '232', '534534', '54343543', '435345345']*21
     positions = [10, 9, 2, 3, 4, 5]
+
+    #names = ['A', 'a', 'a']
+    #positions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
 
     c = BracketCanvas(names, positions)
     c.draw_the_whole_sh()
