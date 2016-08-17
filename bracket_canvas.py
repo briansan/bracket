@@ -89,7 +89,7 @@ class BracketCanvas:
             cursor = self.dd(cursor, '|')
         cursor = self.draw_rep(down, '-', cursor[1] - down[1])
 
-        out = self.draw_str((up[0] + (down[0] - up[0]) / 2, cursor[1]+1), '-->')
+        out = self.draw_str((up[0] + int((down[0] - up[0]) / 2), cursor[1]+1), '-->')
 
         return (out[0]-1, out[1])
 
@@ -128,7 +128,7 @@ class BracketCanvas:
                 leftover = None
 
             next_pos = []
-            for i in range(len(conns)/2):
+            for i in range(int(len(conns)/2)):
                 next_pos.append(self.draw_connection(conns[2*i], conns[2*i+1]))
             if len(conns) % 2 == 1: # odd
                 leftover = conns[len(conns)-1]
