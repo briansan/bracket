@@ -16,6 +16,7 @@ class BracketCanvas:
     margin = 2
     width = 1
     height = 1
+    start_indices = []
 
     def __init__(self, names, positions):
         self.names = names
@@ -34,6 +35,11 @@ class BracketCanvas:
         self.height = self.n * (self.playa_size[0] + self.margin)
         self.width = (self.nround + 1) * playa_size[1] + self.nround * self.connection_size[1]
         self.canvas = [[' ' for j in range(self.width)] for i in range(self.height)]
+
+        # start index of each round
+        self.start_indices = [0]
+        for r in range(1, self.nround+1):
+            self.start_indices.append(self.start_indices[r-1] + int(self.n/(2**(r-1))))
 
     def d(self, pos, char):
         self.canvas[pos[0]][pos[1]] = char
@@ -146,16 +152,25 @@ class BracketCanvas:
                 sys.stdout.write( '%s' % self.canvas[i][j] )
             sys.stdout.write('\n')
 
+    def winner_pos(self, winner_prev_pos):
+        r = -1
+        while r < len(self.start_indices) and self.start_indices[r+1] <= winner_prev_pos:
+            r += 1
+
+        return self.start_indices[r+1] + (winner_prev_pos - self.start_indices[r]) / 2
+
+
 if __name__ == '__main__':
     
     # test
-    names = ['1ss','2wdadwa,,', '3dwadaw,,,', '323', 'jjkjslkj', '232', '534534', '54343543', '435345345']*21
+    names = ['a','b','c','d']
     positions = [10, 9, 2, 3, 4, 5]
 
     #names = ['A', 'a', 'a']
     #positions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
 
     c = BracketCanvas(names, positions)
-    c.draw_the_whole_sh()
+    print c.winner_pos(5)
+    #c.draw_the_whole_sh()
 
 
