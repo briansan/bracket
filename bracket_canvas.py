@@ -17,10 +17,25 @@ class BracketCanvas:
     width = 1
     height = 1
     start_indices = []
+    transpose = False
 
-    def __init__(self, names, positions):
+    side_wall_char = '|'
+    horizontal_wall_char = '-'
+    connection_cable = '-|'
+    connection_string = '-->'
+
+
+    def __init__(self, names, positions, transpose=False):
         self.names = names
         self.positions = positions
+        self.transpose = transpose
+
+        # change characters if transposed
+        if transpose:
+            self.side_wall_char = '-'
+            self.horizontal_wall_char = '|'
+            self.connection_cable = '|-'
+            self.connection_string = '||v'
 
         # max len of name
         self.k = 1
@@ -65,20 +80,20 @@ class BracketCanvas:
     def draw_playa(self, pos, name):
 
         cursor = pos
-        cursor = self.dr(cursor, '|')
-        cursor = self.draw_rep(cursor, '-', self.k)
-        cursor = self.dr(cursor, '|')
+        cursor = self.dr(cursor, self.side_wall_char)
+        cursor = self.draw_rep(cursor, self.horizontal_wall_char, self.k)
+        cursor = self.dr(cursor, self.side_wall_char)
 
         cursor = (pos[0]+1, pos[1])
-        cursor = self.dr(cursor, '|')
+        cursor = self.dr(cursor, self.side_wall_char)
         cursor = self.draw_str(cursor, name)
         cursor = self.draw_rep(cursor, ' ', self.k - len(name))
-        cursor = self.dr(cursor, '|')
+        cursor = self.dr(cursor, self.side_wall_char)
 
         cursor = (pos[0]+2, pos[1])
-        cursor = self.dr(cursor, '|')
-        cursor = self.draw_rep(cursor, '-', self.k)
-        cursor = self.dr(cursor, '|')
+        cursor = self.dr(cursor, self.side_wall_char)
+        cursor = self.draw_rep(cursor, self.horizontal_wall_char, self.k)
+        cursor = self.dr(cursor, self.side_wall_char)
 
         cursor = (cursor[0]+self.margin, pos[1])
         return cursor, (pos[0]+1, pos[1]+self.k+2)
@@ -90,12 +105,12 @@ class BracketCanvas:
             up = pos2
             down = pos1
 
-        cursor = self.dr(up, '-')
+        cursor = self.dr(up, self.connection_cable[0])
         while cursor[0] <= down[0]:
-            cursor = self.dd(cursor, '|')
-        cursor = self.draw_rep(down, '-', cursor[1] - down[1])
+            cursor = self.dd(cursor, self.connection_cable[1])
+        cursor = self.draw_rep(down, self.connection_cable[0], cursor[1] - down[1])
 
-        out = self.draw_str((up[0] + int((down[0] - up[0]) / 2), cursor[1]+1), '-->')
+        out = self.draw_str((up[0] + int((down[0] - up[0]) / 2), cursor[1]+1), self.connection_string)
 
         return (out[0]-1, out[1])
 
@@ -147,10 +162,16 @@ class BracketCanvas:
         self.present()
 
     def present(self):
-        for i in range(self.height):
+        if self.transpose:
             for j in range(self.width):
-                sys.stdout.write( '%s' % self.canvas[i][j] )
-            sys.stdout.write('\n')
+                for i in range(self.height):
+                    sys.stdout.write( '%s' % self.canvas[i][j] )
+                sys.stdout.write('\n')
+        else:
+            for i in range(self.height):
+                for j in range(self.width):
+                    sys.stdout.write( '%s' % self.canvas[i][j] )
+                sys.stdout.write('\n')
 
     def winner_pos(self, winner_prev_pos):
         r = -1
@@ -163,13 +184,14 @@ class BracketCanvas:
 if __name__ == '__main__':
     
     # test
-    names = ['a','b','c','d']*20
-    positions = [0,1,2,3]
+    names = ['adwaadw','bdddd','caaa','dawddawdaw']*10
+    positions = range(len(names))
+    positions[0] = 50
 
     #names = ['A', 'a', 'a']
     #positions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51]
 
-    c = BracketCanvas(names, positions)
+    c = BracketCanvas(names, positions, True)
     c.draw_the_whole_sh()
 
 
